@@ -9,3 +9,7 @@ While not the same shape and size, the new Lilygo T-Display-S3 features a really
 
 Here is the pinout diagram that is provided:
 ![pinout diagram](./images/T-DISPLAY-S3.jpg)
+## Arduino Settings
+
+![Arduino Board settings](./images/arduinosettings.png)
+
