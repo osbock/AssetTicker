@@ -7,8 +7,14 @@ The Coincap API is free, reasonable limits, and while it doesn't have as many of
 
 While not the same shape and size, the new Lilygo T-Display-S3 features a really sharp display with The new ESP-S3 processor which features more memory and several other interesting features. The problem is that this board is not very well documented, so I will attempt to also consolodate my learnings here.
 
-Here is the pinout diagram that is provided:
-![pinout diagram](./images/T-DISPLAY-S3.jpg)
+## Program notes
+A lot can be improved, but you can edit config.h to put in your stock api key
+As I said above, the api isn't real time, but you can check it out here:
+https://www.alphavantage.co/documentation/
+There is some configurability in the stocks and cryptocurrencies, but the symbols aren't currently looked up, so you'll have to manually change the code.
+
+The WiFiManager is the latest version from github, because I couldn't get the library manager to work. The "Key" button will run the portal on demand if you need to configure past the first time. I hope to eventually add parameters to the portal page.
+
 ## Arduino Settings
 The most important thing is to get the latest ESP32 board support package because the S3 Variant is fairly new and offers quite a few new features.
 
@@ -22,4 +28,6 @@ Select
 Select the port that shows up. I believe those settings above are different than defaults, but I've included a screenshot of current working settings.
 
 ![Arduino Board settings](./images/arduinosettings.png)
+Here is the pinout diagram that is provided:
+![pinout diagram](./images/T-DISPLAY-S3.jpg)
 
