@@ -9,8 +9,8 @@ While not the same shape and size, the new Lilygo T-Display-S3 features a really
 
 ## Program notes
 A lot can be improved, but you can edit config.h to put in your stock api key
-As I said above, the api isn't real time, but you can check it out here:
-https://www.alphavantage.co/documentation/
+UPDATE: I changed the code to use the finnhub.io API it seems to give me more uptodate prices
+https://finnhub.io/dashboard to claim your API Key. Be sure to edit it in to config.h
 There is some configurability in the stocks and cryptocurrencies, but the symbols aren't currently looked up, so you'll have to manually change the code.
 
 The WiFiManager is the latest version from github, because I couldn't get the library manager to work. The "Key" button will run the portal on demand if you need to configure past the first time. I hope to eventually add parameters to the portal page.
