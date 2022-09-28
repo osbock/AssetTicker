@@ -19,7 +19,7 @@
 
 TFT_eSPI tft = TFT_eSPI();
 
-extern String update_symbol(String symbol);
+extern String update_symbol(String symbol,double* change);
 extern void update();
 
 unsigned int iteration=0;
@@ -45,9 +45,10 @@ void setup() {
   tft.setTextWrap(true);
   tft.setCursor(0, 170);
   tft.setTextSize(2);
+  delay(3000); //let things settle down
   update();
  }
-#define UPDATE_INTERVAL 1000*60*1
+#define UPDATE_INTERVAL 1000*10*1
 
 void loop() {
    // is configuration portal requested?
@@ -68,6 +69,7 @@ void loop() {
       delay(5000);
     }
   }
+  maybeUpdateData();
   unsigned long currenttime = millis();
   if ((currenttime - last_update) > UPDATE_INTERVAL){
     last_update = currenttime;
@@ -79,20 +81,79 @@ void loop() {
   
     
 }
+
+void outputSymbol(String symbol){ 
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_YELLOW);
+  tft.print(symbol);
+}
+void outputChange(double change){
+  if (change < 0) tft.setTextColor(TFT_RED);
+    else tft.setTextColor(TFT_GREEN);
+    tft.print(String(change));
+}
+String lBTCprice,lETHprice,lDXYprice,lGOLDprice, lSILVERprice;
+double lBTCChange,lETHChange,lDXYChange,lGLDChange, lSLVChange;
+#define API_UPDATE_INTERVAL 12000
+unsigned long LastAPIUpdate =0.0L;
+int update_index = 0;
+String symbols[] = {"BTC.CB=","ETH.CB=",".DXY", "@GC.1","@SI.1"};
+double *changes[] = {&lBTCChange,&lETHChange,&lDXYChange,&lGLDChange,&lSLVChange};
+String *prices[] = {&lBTCprice,&lETHprice,&lDXYprice,&lGOLDprice,&lSILVERprice};
+
+void maybeUpdateData(){
+  unsigned long current = millis();
+  if ((current -LastAPIUpdate) > API_UPDATE_INTERVAL)
+  {
+    USE_SERIAL.printf("updating %s\n",symbols[update_index]);
+    LastAPIUpdate = current;
+    double change;
+    String price = update_symbol(symbols[update_index],&change);
+    if (!price.equals("ERR")){
+      *prices[update_index] = price;
+      *changes[update_index] = change;
+    }
+    (++update_index==5)?update_index=0:update_index;
+    USE_SERIAL.printf("update_index %d\n",update_index);
+  }
+}
 void update(){
-    String BTCprice = update_symbol("BTC.CB=");
-    String ETHprice = update_symbol("ETH.CB=");
-    String DXYprice = update_symbol(".DXY");
-    String GOLDprice = update_symbol("@GC.1");
     tft.fillScreen(CUSTOM_DARK);
-    tft.setTextColor(TFT_WHITE);
-    //update_symbol("BTC.CM=");
+    tft.setTextColor(TFT_YELLOW);
+
     tft.setCursor(0, 15);
     tft.setTextSize(3);
-    tft.println("BTC: $" + BTCprice);
-    tft.println("ETH: $" + ETHprice);
-    tft.println("DXY: $" + DXYprice);
-    tft.println("GOLD: $" + GOLDprice);
+    int screen_width = tft.width();
+    int width = tft.textWidth("$"+lBTCprice);
+    outputSymbol("BTC:");
+    outputChange(lBTCChange);
+    tft.setTextSize(3);
+    tft.setCursor(screen_width-width, tft.getCursorY());
+    tft.println("$" + lBTCprice);
+    width = tft.textWidth("$"+lETHprice);
+    outputSymbol("ETH:");
+    outputChange(lETHChange);
+    tft.setTextSize(3);
+    tft.setCursor(screen_width-width, tft.getCursorY());
+    tft.println("$" + lETHprice);
+    width = tft.textWidth("$"+lDXYprice);
+    outputSymbol("DXY:");
+    outputChange(lDXYChange);
+    tft.setTextSize(3);
+    tft.setCursor(screen_width-width, tft.getCursorY());
+    tft.println("$" + lDXYprice);
+    outputSymbol("GLD:");
+    outputChange(lGLDChange);
+    tft.setTextSize(3);
+    width = tft.textWidth("$"+lGOLDprice);
+    tft.setCursor(screen_width-width, tft.getCursorY());
+    tft.println("$" + lGOLDprice);
+    outputSymbol("SLV:");
+    outputChange(lSLVChange);
+    tft.setTextSize(3);
+    width = tft.textWidth("$"+lSILVERprice);
+    tft.setCursor(screen_width-width, tft.getCursorY());
+    tft.println("$" + lSILVERprice);
 }
 
 
